@@ -1,157 +1,140 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.4">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
-    span.s1 {font-kerning: none}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather App</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* ===== Body & Layout ===== */
+body {
+  margin: 0; font-family: 'Segoe UI', sans-serif; display: flex;
+  background: #0f2027; color: #fff; height: 100vh; overflow: hidden;
+}
+nav {
+  width: 220px; background:#111; display:flex; flex-direction:column; padding-top:20px;
+}
+nav a {
+  color:white; text-decoration:none; padding:15px; font-size:18px;
+  transition:0.2s;
+}
+nav a:hover { background:#222; }
+.main-content { flex:1; overflow:auto; padding:20px; }
+
+/* ===== Sections Styling ===== */
+.section { display:none; }
+.section.active { display:block; }
+
+/* ===== Weather Card ===== */
+.main-card {
+  min-height: 40vh; border-radius: 20px;
+  padding: 20px; display:flex; flex-direction:column; justify-content:center; align-items:center;
+  background: rgba(255,255,255,0.05); backdrop-filter: blur(15px);
+}
+.city{ font-size:32px; font-weight:700; }
+.temp{ font-size:72px; margin:10px 0; }
+.description{ font-size:20px; opacity:0.8; }
+.forecast-container{ display:flex; overflow-x:auto; gap:10px; margin-top:15px; }
+.forecast-card{ min-width:60px; background:rgba(255,255,255,0.08); border-radius:12px; padding:8px; text-align:center; }
+.forecast-time{ font-size:12px; opacity:0.7; }
+.forecast-temp{ font-size:16px; font-weight:600; margin-top:5px; }
+
+/* ===== Alerts Styling ===== */
+#alertMap{height:400px; border-radius:12px; margin-bottom:15px;}
+.alertCard{ padding:10px; border-radius:10px; margin-bottom:8px; }
+.alert-warning{background:red;} .alert-watch{background:orange;} .alert-advisory{background:gold;color:#333;} .alert-daily-summary{background:green;} .alert-wind-advisory{background:#1E90FF;}
+
+/* ===== Videos Styling ===== */
+.video-container{ position:relative; width:100%; padding-bottom:56.25%; margin-bottom:20px; }
+.video-container iframe{ position:absolute; width:100%; height:100%; border:0; }
+</style>
 </head>
 <body>
-<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
-<p class="p1"><span class="s1">&lt;html lang="en"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;head&gt;</span></p>
-<p class="p1"><span class="s1">&lt;meta charset="UTF-8"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;title&gt;Weather App&lt;/title&gt;</span></p>
-<p class="p1"><span class="s1">&lt;link rel="manifest" href="manifest.json"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/&gt;</span></p>
-<p class="p1"><span class="s1">&lt;script src="https://unpkg.com/leaflet/dist/leaflet.js"&gt;&lt;/script&gt;</span></p>
-<p class="p1"><span class="s1">&lt;script src="https://cdn.jsdelivr.net/npm/chart.js"&gt;&lt;/script&gt;</span></p>
-<p class="p1"><span class="s1">&lt;style&gt;</span></p>
-<p class="p1"><span class="s1">/* ===== Body &amp; Layout ===== */</span></p>
-<p class="p1"><span class="s1">body {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>margin: 0; font-family: 'Segoe UI', sans-serif; display: flex;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>background: #0f2027; color: #fff; height: 100vh; overflow: hidden;</span></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p1"><span class="s1">nav {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>width: 220px; background:#111; display:flex; flex-direction:column; padding-top:20px;</span></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p1"><span class="s1">nav a {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>color:white; text-decoration:none; padding:15px; font-size:18px;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>transition:0.2s;</span></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p1"><span class="s1">nav a:hover { background:#222; }</span></p>
-<p class="p1"><span class="s1">.main-content { flex:1; overflow:auto; padding:20px; }</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">/* ===== Sections Styling ===== */</span></p>
-<p class="p1"><span class="s1">.section { display:none; }</span></p>
-<p class="p1"><span class="s1">.section.active { display:block; }</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">/* ===== Weather Card ===== */</span></p>
-<p class="p1"><span class="s1">.main-card {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>min-height: 40vh; border-radius: 20px;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>padding: 20px; display:flex; flex-direction:column; justify-content:center; align-items:center;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>background: rgba(255,255,255,0.05); backdrop-filter: blur(15px);</span></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p1"><span class="s1">.city{ font-size:32px; font-weight:700; }</span></p>
-<p class="p1"><span class="s1">.temp{ font-size:72px; margin:10px 0; }</span></p>
-<p class="p1"><span class="s1">.description{ font-size:20px; opacity:0.8; }</span></p>
-<p class="p1"><span class="s1">.forecast-container{ display:flex; overflow-x:auto; gap:10px; margin-top:15px; }</span></p>
-<p class="p1"><span class="s1">.forecast-card{ min-width:60px; background:rgba(255,255,255,0.08); border-radius:12px; padding:8px; text-align:center; }</span></p>
-<p class="p1"><span class="s1">.forecast-time{ font-size:12px; opacity:0.7; }</span></p>
-<p class="p1"><span class="s1">.forecast-temp{ font-size:16px; font-weight:600; margin-top:5px; }</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">/* ===== Alerts Styling ===== */</span></p>
-<p class="p1"><span class="s1">#alertMap{height:400px; border-radius:12px; margin-bottom:15px;}</span></p>
-<p class="p1"><span class="s1">.alertCard{ padding:10px; border-radius:10px; margin-bottom:8px; }</span></p>
-<p class="p1"><span class="s1">.alert-warning{background:red;} .alert-watch{background:orange;} .alert-advisory{background:gold;color:#333;} .alert-daily-summary{background:green;} .alert-wind-advisory{background:#1E90FF;}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">/* ===== Videos Styling ===== */</span></p>
-<p class="p1"><span class="s1">.video-container{ position:relative; width:100%; padding-bottom:56.25%; margin-bottom:20px; }</span></p>
-<p class="p1"><span class="s1">.video-container iframe{ position:absolute; width:100%; height:100%; border:0; }</span></p>
-<p class="p1"><span class="s1">&lt;/style&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
-<p class="p1"><span class="s1">&lt;body&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;!-- ===== Side Navigation ===== --&gt;</span></p>
-<p class="p1"><span class="s1">&lt;nav&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;a href="#" data-section="weather"&gt;Weather&lt;/a&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;a href="#" data-section="alerts"&gt;Alerts&lt;/a&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;a href="#" data-section="radar"&gt;Radar&lt;/a&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;a href="#" data-section="videos"&gt;More&lt;/a&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/nav&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;!-- ===== Main Content ===== --&gt;</span></p>
-<p class="p1"><span class="s1">&lt;div class="main-content"&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;!-- Weather Section --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;div class="section" id="weather"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="main-card" id="mainCard"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="city" id="city"&gt;Loading...&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="temp" id="temp"&gt;--°F&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="description" id="desc"&gt;Fetching weather...&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="forecast-container" id="forecast"&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="refresh" id="refresh"&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;!-- Alerts Section --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;div class="section" id="alerts"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h3&gt;Alert Map&lt;/h3&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div id="alertMap"&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h3&gt;Active Alerts&lt;/h3&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div id="alertsList"&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h3&gt;Past Alerts&lt;/h3&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div id="historyList"&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h3&gt;Alert History Chart&lt;/h3&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;canvas id="historyChart" height="100"&gt;&lt;/canvas&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;!-- Radar Section --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;div class="section" id="radar"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div style="position:relative;width:100%;padding-bottom:90vh;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;iframe src="https://embed.ventusky.com/?p=39;-76;2&amp;l=temperature-2m&amp;w=0EAAtDW2A"</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>style="position:absolute;left:0;top:0;width:100%;height:100%;border:0;" loading="lazy"&gt;&lt;/iframe&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;!-- Videos Section --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;div class="section" id="videos"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="video-container"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;iframe src="https://www.youtube.com/embed/lqgtk4ozgsg" allowfullscreen&gt;&lt;/iframe&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="video-container"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;iframe src="https://www.youtube.com/embed/_5TiTfuvotc" allowfullscreen&gt;&lt;/iframe&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;!-- ===== OneSignal Push Notifications ===== --&gt;</span></p>
-<p class="p1"><span class="s1">&lt;script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer&gt;&lt;/script&gt;</span></p>
-<p class="p1"><span class="s1">&lt;script&gt;</span></p>
-<p class="p1"><span class="s1">window.OneSignalDeferred = window.OneSignalDeferred || [];</span></p>
-<p class="p1"><span class="s1">OneSignalDeferred.push(async function(OneSignal) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>await OneSignal.init({</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>appId: "bd818f5a-6267-4efe-b0d1-7c5f5329402e",</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>safari_web_id: "web.onesignal.auto.195e7e66-9dea-4e11-b56c-b4a654da5ab7",</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>notifyButton: { enable:true },</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
-<p class="p1"><span class="s1">});</span></p>
-<p class="p1"><span class="s1">&lt;/script&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;!-- ===== JavaScript for Navigation &amp; Weather (simplified) ===== --&gt;</span></p>
-<p class="p1"><span class="s1">&lt;script&gt;</span></p>
-<p class="p1"><span class="s1">const sections = document.querySelectorAll(".section");</span></p>
-<p class="p1"><span class="s1">document.querySelectorAll("nav a").forEach(a=&gt;{</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>a.addEventListener("click", e=&gt;{</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>e.preventDefault();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>sections.forEach(s=&gt;s.classList.remove("active"));</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const target = document.getElementById(a.dataset.section);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>target.classList.add("active");</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
-<p class="p1"><span class="s1">});</span></p>
-<p class="p1"><span class="s1">// Show Weather by default</span></p>
-<p class="p1"><span class="s1">document.getElementById("weather").classList.add("active");</span></p>
-<p class="p1"><span class="s1">&lt;/script&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+
+<!-- ===== Side Navigation ===== -->
+<nav>
+  <a href="#" data-section="weather">Weather</a>
+  <a href="#" data-section="alerts">Alerts</a>
+  <a href="#" data-section="radar">Radar</a>
+  <a href="#" data-section="videos">More</a>
+</nav>
+
+<!-- ===== Main Content ===== -->
+<div class="main-content">
+
+  <!-- Weather Section -->
+  <div class="section" id="weather">
+    <div class="main-card" id="mainCard">
+      <div class="city" id="city">Loading...</div>
+      <div class="temp" id="temp">--°F</div>
+      <div class="description" id="desc">Fetching weather...</div>
+      <div class="forecast-container" id="forecast"></div>
+      <div class="refresh" id="refresh"></div>
+    </div>
+  </div>
+
+  <!-- Alerts Section -->
+  <div class="section" id="alerts">
+    <h3>Alert Map</h3>
+    <div id="alertMap"></div>
+    <h3>Active Alerts</h3>
+    <div id="alertsList"></div>
+    <h3>Past Alerts</h3>
+    <div id="historyList"></div>
+    <h3>Alert History Chart</h3>
+    <canvas id="historyChart" height="100"></canvas>
+  </div>
+
+  <!-- Radar Section -->
+  <div class="section" id="radar">
+    <div style="position:relative;width:100%;padding-bottom:90vh;">
+      <iframe src="https://embed.ventusky.com/?p=39;-76;2&l=temperature-2m&w=0EAAtDW2A"
+        style="position:absolute;left:0;top:0;width:100%;height:100%;border:0;" loading="lazy"></iframe>
+    </div>
+  </div>
+
+  <!-- Videos Section -->
+  <div class="section" id="videos">
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/lqgtk4ozgsg" allowfullscreen></iframe>
+    </div>
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/_5TiTfuvotc" allowfullscreen></iframe>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== OneSignal Push Notifications ===== -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+OneSignalDeferred.push(async function(OneSignal) {
+  await OneSignal.init({
+    appId: "bd818f5a-6267-4efe-b0d1-7c5f5329402e",
+    safari_web_id: "web.onesignal.auto.195e7e66-9dea-4e11-b56c-b4a654da5ab7",
+    notifyButton: { enable:true },
+  });
+});
+</script>
+
+<!-- ===== JavaScript for Navigation & Weather (simplified) ===== -->
+<script>
+const sections = document.querySelectorAll(".section");
+document.querySelectorAll("nav a").forEach(a=>{
+  a.addEventListener("click", e=>{
+    e.preventDefault();
+    sections.forEach(s=>s.classList.remove("active"));
+    const target = document.getElementById(a.dataset.section);
+    target.classList.add("active");
+  });
+});
+// Show Weather by default
+document.getElementById("weather").classList.add("active");
+</script>
+
 </body>
 </html>
