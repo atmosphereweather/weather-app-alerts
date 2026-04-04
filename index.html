@@ -33,17 +33,12 @@
 <p class="p1"><span class="s1">&lt;style&gt;</span></p>
 <p class="p1"><span class="s1">body{ font-family:Arial; max-width:900px; margin:auto; padding:10px; }</span></p>
 <p class="p1"><span class="s1">@keyframes flash{0%{opacity:1;}50%{opacity:0.5;}100%{opacity:1;}}</span></p>
-<p class="p1"><span class="s1">.alertCard{ border-radius:15px; padding:15px; color:white; box-shadow:0 4px 12px rgba(0,0,0,0.1); }</span></p>
+<p class="p1"><span class="s1">.alertCard{ border-radius:15px; padding:15px; color:white; box-shadow:0 4px 12px rgba(0,0,0,0.1); margin-bottom:10px;}</span></p>
 <p class="p1"><span class="s1">.alert-warning{background:red;}</span></p>
 <p class="p1"><span class="s1">.alert-watch{background:orange;}</span></p>
 <p class="p1"><span class="s1">.alert-advisory{background:#FFD700;color:#333;}</span></p>
 <p class="p1"><span class="s1">.alert-daily-summary{background:green;}</span></p>
 <p class="p1"><span class="s1">.alert-wind-advisory{background:#1E90FF;}</span></p>
-<p class="p1"><span class="s1">.alertDescription{max-height:50px; overflow:hidden; transition:max-height .4s; white-space:pre-wrap;}</span></p>
-<p class="p1"><span class="s1">.alertDescription.expanded{max-height:2000px;}</span></p>
-<p class="p1"><span class="s1">.countdown{font-weight:bold;}</span></p>
-<p class="p1"><span class="s1">.progressBar{width:100%; height:8px; background:#ddd; border-radius:5px; margin-top:4px;}</span></p>
-<p class="p1"><span class="s1">.progressBar div{height:8px; border-radius:5px;}</span></p>
 <p class="p1"><span class="s1">#alertMap{height:500px; border-radius:20px; margin-bottom:20px;}</span></p>
 <p class="p1"><span class="s1">&lt;/style&gt;</span></p>
 <p class="p1"><span class="s1">&lt;/head&gt;</span></p>
@@ -59,119 +54,81 @@
 <p class="p1"><span class="s1">&lt;h3&gt;Alert Map&lt;/h3&gt;</span></p>
 <p class="p1"><span class="s1">&lt;div id="alertMap"&gt;&lt;/div&gt;</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;div id="filters"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;label&gt;Severity:&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1">&lt;select id="filterSeverity" onchange="applyFilters()"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="all"&gt;All&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="warning"&gt;Warning&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="watch"&gt;Watch&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="advisory"&gt;Advisory&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="daily-summary"&gt;Daily Summary&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/select&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;label&gt;Type:&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1">&lt;select id="filterType" onchange="applyFilters()"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="all"&gt;All&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="Tornado"&gt;Tornado&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="Flood"&gt;Flood&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="Wildfire"&gt;Wildfire&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="Severe Storm"&gt;Severe Storm&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="Lightning"&gt;Lightning&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="Wind Advisory"&gt;Wind Advisory&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="Heat"&gt;Heat&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="Cold Weather"&gt;Cold Weather&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="Tropical Storm"&gt;Tropical Storm&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="Hail"&gt;Hail&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="Winter Storm"&gt;Winter Storm&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;option value="Daily Summary"&gt;Daily Summary&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/select&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;label&gt;Date:&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1">&lt;input type="date" id="filterDate" onchange="applyFilters()"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
 <p class="p1"><span class="s1">&lt;h3&gt;Active Alerts&lt;/h3&gt;</span></p>
 <p class="p1"><span class="s1">&lt;div id="alertsList"&gt;&lt;/div&gt;</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;h3&gt;Past Alerts&lt;/h3&gt;</span></p>
-<p class="p1"><span class="s1">&lt;div id="historyList"&gt;&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;h3&gt;Alert History Chart&lt;/h3&gt;</span></p>
-<p class="p1"><span class="s1">&lt;canvas id="historyChart" height="100"&gt;&lt;/canvas&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
 <p class="p1"><span class="s1">&lt;script&gt;</span></p>
 <p class="p1"><span class="s1">/* ===== FIREBASE ===== */</span></p>
-<p class="p1"><span class="s1">const firebaseConfig={</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>apiKey:"AIzaSyBrctVtFlMEc8qsd3Am21K3QzIJMOfk66Q",</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>authDomain:"atmosphere-weather-alert-18797.firebaseapp.com",</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>databaseURL:"https://atmosphere-weather-alert-18797-default-rtdb.firebaseio.com",</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>projectId:"atmosphere-weather-alert-18797"</span></p>
+<p class="p1"><span class="s1">const firebaseConfig = {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>apiKey:"AIzaSyBrctVtFlMEc8qsd3Am21K3QzIJMOfk66Q",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>authDomain:"atmosphere-weather-alert-18797.firebaseapp.com",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>databaseURL:"https://atmosphere-weather-alert-18797-default-rtdb.firebaseio.com",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>projectId:"atmosphere-weather-alert-18797"</span></p>
 <p class="p1"><span class="s1">};</span></p>
+<p class="p2"><span class="s1"></span><br></p>
 <p class="p1"><span class="s1">firebase.initializeApp(firebaseConfig);</span></p>
-<p class="p1"><span class="s1">const db=firebase.database();</span></p>
-<p class="p1"><span class="s1">const alertsRef=db.ref("weatherAlerts");</span></p>
+<p class="p1"><span class="s1">const db = firebase.database();</span></p>
+<p class="p1"><span class="s1">const alertsRef = db.ref("weatherAlerts");</span></p>
 <p class="p2"><span class="s1"></span><br></p>
 <p class="p1"><span class="s1">/* ===== MAP ===== */</span></p>
 <p class="p1"><span class="s1">let map;</span></p>
-<p class="p1"><span class="s1">const markers=[];</span></p>
+<p class="p2"><span class="s1"></span><br></p>
 <p class="p1"><span class="s1">function initMap(){</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>map=L.map("alertMap").setView([39.29,-76.61],8);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>map = L.map("alertMap").setView([39.29,-76.61],8);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);</span></p>
 <p class="p1"><span class="s1">}</span></p>
 <p class="p2"><span class="s1"></span><br></p>
 <p class="p1"><span class="s1">/* ===== ALERTS ===== */</span></p>
-<p class="p1"><span class="s1">let alertsData={};</span></p>
-<p class="p2"><span class="s1"></span><br></p>
 <p class="p1"><span class="s1">function notifyUser(alert){</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>if(alert.severity==="warning" &amp;&amp; "Notification" in window){</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>new Notification(`⚠️ ${alert.type}`, { body: alert.description });</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if(alert.severity==="warning" &amp;&amp; "Notification" in window){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>new Notification(`⚠️ ${alert.type}`, { body: alert.description });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
 <p class="p1"><span class="s1">}</span></p>
 <p class="p2"><span class="s1"></span><br></p>
 <p class="p1"><span class="s1">function showAlertOnMap(alert){</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>fetch("https://nominatim.openstreetmap.org/search?format=json&amp;q="+encodeURIComponent(alert.location))</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>.then(res=&gt;res.json())</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>.then(data=&gt;{</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if(!data.length) return;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const lat=data[0].lat;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const lon=data[0].lon;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>fetch("https://nominatim.openstreetmap.org/search?format=json&amp;q=" + encodeURIComponent(alert.location))</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>.then(res =&gt; res.json())</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>.then(data =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(!data.length) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const lat = data[0].lat;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const lon = data[0].lon;</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>L.marker([lat,lon]).addTo(map)</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">   </span>.bindPopup(`&lt;b&gt;${alert.type}&lt;/b&gt;&lt;br&gt;${alert.location}`);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>L.marker([lat, lon]).addTo(map)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>.bindPopup(`&lt;b&gt;${alert.type}&lt;/b&gt;&lt;br&gt;${alert.location}`);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
 <p class="p1"><span class="s1">}</span></p>
 <p class="p2"><span class="s1"></span><br></p>
 <p class="p1"><span class="s1">function renderAlerts(data){</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>const list=document.getElementById("alertsList");</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>list.innerHTML="";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const list = document.getElementById("alertsList");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>list.innerHTML = "";</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>for(const key in data){</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const a=data[key];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>for(const key in data){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const a = data[key];</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const div=document.createElement("div");</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>div.className="alertCard alert-"+a.severity;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const div = document.createElement("div");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>div.className = "alertCard alert-" + a.severity;</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>div.innerHTML=`</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;b&gt;${a.location}&lt;/b&gt; - ${a.type}&lt;br&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>${a.description}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;br&gt;&lt;button onclick='showAlertOnMap(${JSON.stringify(a)})'&gt;Map&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>div.innerHTML = `</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;b&gt;${a.location}&lt;/b&gt; - ${a.type}&lt;br&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>${a.description}&lt;br&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;button onclick='showAlertOnMap(${JSON.stringify(a)})'&gt;Map&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>`;</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>list.appendChild(div);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>list.appendChild(div);</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if(a.severity==="warning"){</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">   </span>document.getElementById("warningBanner").style.display="block";</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">   </span>notifyUser(a);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(a.severity === "warning"){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>document.getElementById("warningBanner").style.display = "block";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>notifyUser(a);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>}</span></p>
 <p class="p1"><span class="s1">}</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">alertsRef.on("value",(snap)=&gt;{</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>alertsData=snap.val() || {};</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space"> </span>renderAlerts(alertsData);</span></p>
+<p class="p1"><span class="s1">alertsRef.on("value", (snap) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const data = snap.val() || {};</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>renderAlerts(data);</span></p>
 <p class="p1"><span class="s1">});</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">window.onload=initMap;</span></p>
+<p class="p1"><span class="s1">window.onload = initMap;</span></p>
 <p class="p2"><span class="s1"></span><br></p>
 <p class="p1"><span class="s1">/* ===== ONESIGNAL ===== */</span></p>
 <p class="p1"><span class="s1">window.OneSignalDeferred = window.OneSignalDeferred || [];</span></p>
@@ -183,7 +140,6 @@
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>notifyButton: { enable: true }</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// Ask for permission if not decided</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const permission = await OneSignal.Notifications.permission;</span></p>
 <p class="p2"><span class="s1"></span><br></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (permission === "default") {</span></p>
