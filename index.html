@@ -5,12 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Atmosphere</title>
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({ appId: "d4e62b24-25ed-4f1c-9346-16e03226921c" });
-  });
-</script>
+<script>window.OneSignalDeferred = window.OneSignalDeferred || [];</script>
+<link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href__="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -30,6 +26,18 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .nav-links button.admin-btn:hover,.nav-links button.admin-btn.active{background:rgba(125,211,252,0.12);color:#7dd3fc;}
 .logout-btn{background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:13px;padding:8px 12px;border-radius:8px;transition:all 0.2s;}
 .logout-btn:hover{color:#fff;background:rgba(255,255,255,0.06);}
+
+/* NOTIF DROPDOWN */
+.notif-wrap{position:relative;}
+.notif-btn{background:none;border:none;cursor:pointer;font-size:18px;padding:8px 10px;border-radius:10px;transition:background 0.2s;line-height:1;}
+.notif-btn:hover{background:rgba(255,255,255,0.10);}
+.notif-dropdown{display:none;position:absolute;top:calc(100% + 10px);right:0;width:240px;background:rgba(15,25,45,0.97);backdrop-filter:blur(40px);border:1px solid rgba(255,255,255,0.15);border-radius:18px;padding:18px 16px;box-shadow:0 12px 40px rgba(0,50,150,0.4);z-index:200;}
+.notif-dropdown.open{display:block;}
+.notif-dd-title{font-size:13px;font-weight:700;color:#7dd3fc;margin-bottom:6px;}
+.notif-dd-status{font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:14px;line-height:1.5;}
+.notif-dd-btn{width:100%;padding:9px;border-radius:10px;border:none;cursor:pointer;font-size:13px;font-weight:700;background:linear-gradient(135deg,rgba(30,120,255,0.9),rgba(0,80,220,0.8));color:#fff;transition:opacity 0.2s;}
+.notif-dd-btn:hover{opacity:0.85;}
+.notif-dd-btn.unsub{background:rgba(80,80,100,0.5);}
 
 /* GLOBAL WARNING */
 #globalBanner{display:none;background:rgba(220,38,38,0.18);border-bottom:1px solid rgba(220,38,38,0.35);text-align:center;padding:10px;color:#fca5a5;font-weight:700;font-size:14px;animation:pulse 1.5s infinite;}
@@ -115,7 +123,19 @@ select,input[type=date]{background:rgba(255,255,255,0.06);color:#fff;border:1px 
     <button onclick="showPage('settings')" id="nav-settings">⚙️ <span>Settings</span></button>
     <button onclick="showPage('admin')" class="admin-btn" id="nav-admin">🛡 <span>Admin</span></button>
   </div>
-  <button class="logout-btn">↩ Sign out</button>
+  <div style="display:flex;align-items:center;gap:4px;">
+    <div class="notif-wrap">
+      <button class="notif-btn" id="notifBtn" onclick="toggleNotifDropdown()">
+        <span id="notifBell">🔔</span>
+      </button>
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-dd-title">Push Notifications</div>
+        <div class="notif-dd-status" id="notifStatus">Checking…</div>
+        <button class="notif-dd-btn" id="notifActionBtn" onclick="handleNotifAction()">Enable Notifications</button>
+      </div>
+    </div>
+    <button class="logout-btn">↩ Sign out</button>
+  </div>
 </nav>
 
 <div id="globalBanner">🚨 ACTIVE WEATHER WARNING IN EFFECT — <a href__="#" onclick="showPage('alerts')" style="color:#fca5a5">View Alerts</a> 🚨</div>
@@ -226,7 +246,10 @@ function showPage(name) {
     const btn = document.getElementById('nav-'+p);
     if(btn) btn.classList.toggle('active', p===name);
   });
-  if(name==='alerts' && !mapInited) initAlertMap();
+  if(name==='alerts') {
+    if(!mapInited) initAlertMap();
+    setTimeout(() => { if(map) map.invalidateSize(); }, 50);
+  }
 }
 
 // ─── FIREBASE ─────────────────────────────────────────
@@ -654,6 +677,90 @@ function refreshAdminAlerts(){
     }
   });
 }
+// ─── ONESIGNAL NOTIFICATIONS ──────────────────────────
+function toggleNotifDropdown() {
+  document.getElementById('notifDropdown').classList.toggle('open');
+}
+
+document.addEventListener('click', e => {
+  const wrap = document.querySelector('.notif-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('notifDropdown').classList.remove('open');
+  }
+});
+
+async function handleNotifAction() {
+  const btn = document.getElementById('notifActionBtn');
+  const status = document.getElementById('notifStatus');
+
+  if (!window.OneSignal) {
+    status.textContent = '⚠️ Notifications not ready yet. Please try again.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  try {
+    const optedIn = window.OneSignal.User.PushSubscription.optedIn;
+    if (optedIn) {
+      await window.OneSignal.User.PushSubscription.optOut();
+      updateNotifUI(false);
+    } else {
+      await window.OneSignal.Slidedown.promptPush();
+      updateNotifUI(window.OneSignal.User.PushSubscription.optedIn);
+    }
+  } catch(e) {
+    console.warn('Notification error:', e);
+    status.textContent = '⚠️ Something went wrong. Try again.';
+    updateNotifUI(false);
+  }
+
+  btn.disabled = false;
+}
+
+function updateNotifUI(optedIn) {
+  const btn    = document.getElementById('notifActionBtn');
+  const status = document.getElementById('notifStatus');
+  const bell   = document.getElementById('notifBell');
+  if (optedIn) {
+    bell.textContent   = '🔔';
+    status.textContent = '✅ Subscribed to weather alerts.';
+    btn.textContent    = 'Unsubscribe';
+    btn.classList.add('unsub');
+  } else {
+    bell.textContent   = '🔕';
+    status.textContent = 'Get push notifications for active weather alerts.';
+    btn.textContent    = 'Enable Notifications';
+    btn.classList.remove('unsub');
+  }
+}
+
+OneSignalDeferred.push(async function(OneSignal) {
+  await OneSignal.init({
+    appId: "d4e62b24-25ed-4f1c-9346-16e03226921c",
+    safari_web_id: "web.onesignal.auto.53856230-671c-4389-9801-7058869c9769",
+    serviceWorkerPath: "service-worker.js",
+    notifyButton: { enable: false },
+    allowLocalhostAsSecureOrigin: true,
+  });
+  updateNotifUI(OneSignal.User.PushSubscription.optedIn);
+  OneSignal.User.PushSubscription.addEventListener('change', e => {
+    updateNotifUI(e.current.optedIn);
+  });
+});
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js');
+}
+
+// Fallback: if OneSignal never inits, stop showing "Checking..."
+setTimeout(() => {
+  const status = document.getElementById('notifStatus');
+  if (status && status.textContent === 'Checking…') {
+    status.textContent = 'Get push notifications for active weather alerts.';
+    document.getElementById('notifActionBtn').textContent = 'Enable Notifications';
+  }
+}, 5000);
 </script>
-</body>
 </html>
