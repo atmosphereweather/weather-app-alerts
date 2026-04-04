@@ -1,2 +1,6 @@
 /*
-  Content-Type: text/html
+  X-Content-Type-Options: nosniff
+
+/service-worker.js
+  Content-Type: application/javascript
+  Service-Worker-Allowed: /

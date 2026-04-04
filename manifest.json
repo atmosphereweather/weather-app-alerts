@@ -1,10 +1,11 @@
 {
-  "name": "Weather App",
-  "short_name": "Weather",
+  "name": "Atmosphere",
+  "short_name": "Atmosphere",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#0f2027",
   "theme_color": "#0f2027",
+  "gcm_sender_id": "482941778795",
   "icons": [
     {
       "src": "awpic.png",
