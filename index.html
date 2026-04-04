@@ -7,7 +7,7 @@
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>window.OneSignalDeferred = window.OneSignalDeferred || [];</script>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href__="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -27,22 +27,9 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-co
 .logout-btn{background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:13px;padding:8px 12px;border-radius:8px;transition:all 0.2s;}
 .logout-btn:hover{color:#fff;background:rgba(255,255,255,0.06);}
 
-/* NOTIF DROPDOWN */
-.notif-wrap{position:relative;}
-.notif-btn{background:none;border:none;cursor:pointer;font-size:18px;padding:8px 10px;border-radius:10px;transition:background 0.2s;line-height:1;}
-.notif-btn:hover{background:rgba(255,255,255,0.10);}
-.notif-dropdown{display:none;position:absolute;top:calc(100% + 10px);right:0;width:240px;background:rgba(15,25,45,0.97);backdrop-filter:blur(40px);border:1px solid rgba(255,255,255,0.15);border-radius:18px;padding:18px 16px;box-shadow:0 12px 40px rgba(0,50,150,0.4);z-index:200;}
-.notif-dropdown.open{display:block;}
-.notif-dd-title{font-size:13px;font-weight:700;color:#7dd3fc;margin-bottom:6px;}
-.notif-dd-status{font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:14px;line-height:1.5;}
-.notif-dd-btn{width:100%;padding:9px;border-radius:10px;border:none;cursor:pointer;font-size:13px;font-weight:700;background:linear-gradient(135deg,rgba(30,120,255,0.9),rgba(0,80,220,0.8));color:#fff;transition:opacity 0.2s;}
-.notif-dd-btn:hover{opacity:0.85;}
-.notif-dd-btn.unsub{background:rgba(80,80,100,0.5);}
-
 /* GLOBAL WARNING */
 #globalBanner{display:none;background:rgba(220,38,38,0.18);border-bottom:1px solid rgba(220,38,38,0.35);text-align:center;padding:10px;color:#fca5a5;font-weight:700;font-size:14px;animation:pulse 1.5s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.65}}
-@keyframes flash{0%{opacity:1;}50%{opacity:0.4;}100%{opacity:1;}}
 
 /* PAGES */
 .page{display:none;max-width:1100px;margin:0 auto;padding:24px 16px;}
@@ -123,24 +110,11 @@ select,input[type=date]{background:rgba(255,255,255,0.06);color:#fff;border:1px 
     <button onclick="showPage('settings')" id="nav-settings">⚙️ <span>Settings</span></button>
     <button onclick="showPage('admin')" class="admin-btn" id="nav-admin">🛡 <span>Admin</span></button>
   </div>
-  <div style="display:flex;align-items:center;gap:4px;">
-    <div class="notif-wrap">
-      <button class="notif-btn" id="notifBtn" onclick="toggleNotifDropdown()">
-        <span id="notifBell">🔔</span>
-      </button>
-      <div class="notif-dropdown" id="notifDropdown">
-        <div class="notif-dd-title">Push Notifications</div>
-        <div class="notif-dd-status" id="notifStatus">Checking…</div>
-        <button class="notif-dd-btn" id="notifActionBtn" onclick="handleNotifAction()">Enable Notifications</button>
-      </div>
-    </div>
-    <button class="logout-btn">↩ Sign out</button>
-  </div>
+  <button class="logout-btn">↩ Sign out</button>
 </nav>
 
-<div id="globalBanner">🚨 ACTIVE WEATHER WARNING IN EFFECT — <a href__="#" onclick="showPage('alerts')" style="color:#fca5a5">View Alerts</a> 🚨</div>
+<div id="globalBanner">🚨 ACTIVE WEATHER WARNING IN EFFECT — <a href="#" onclick="showPage('alerts')" style="color:#fca5a5">View Alerts</a> 🚨</div>
 
-<!-- DASHBOARD -->
 <div class="page active" id="page-dashboard">
   <div id="weather-card" onclick="toggleDetails()">
     <div id="weather-bg"></div>
@@ -161,7 +135,6 @@ select,input[type=date]{background:rgba(255,255,255,0.06);color:#fff;border:1px 
   </div>
 </div>
 
-<!-- ALERTS -->
 <div class="page" id="page-alerts">
   <div class="page-title">Maryland Weather Alerts</div>
   <div id="alertMap"></div>
@@ -181,12 +154,10 @@ select,input[type=date]{background:rgba(255,255,255,0.06);color:#fff;border:1px 
   <canvas id="historyChart" height="100"></canvas>
 </div>
 
-<!-- RADAR -->
 <div class="page" id="page-radar">
   <iframe id="radar-frame" src="https://embed.ventusky.com/?p=39;-76;6&l=temperature-2m" loading="lazy" frameborder="0"></iframe>
 </div>
 
-<!-- SETTINGS -->
 <div class="page" id="page-settings">
   <div style="margin-bottom:20px;">
     <div style="font-size:28px;font-weight:800;color:#fff;">⚙️ Settings</div>
@@ -207,7 +178,6 @@ select,input[type=date]{background:rgba(255,255,255,0.06);color:#fff;border:1px 
   </div>
 </div>
 
-<!-- ADMIN -->
 <div class="page" id="page-admin">
   <div class="page-title">🛡 Admin Panel — Manage Weather Alerts</div>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:16px;">
@@ -266,7 +236,6 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const alertsRef = db.ref("weatherAlerts");
 
-// Global banner
 alertsRef.on("value", snapshot => {
   const data = snapshot.val() || {};
   const now = Date.now();
@@ -274,7 +243,7 @@ alertsRef.on("value", snapshot => {
   document.getElementById('globalBanner').style.display = hasWarning ? 'block' : 'none';
 });
 
-// ─── WEATHER ──────────────────────────────────────────
+// ─── WEATHER (PARTICLES & FETCH) ───────────────────────
 const OWM_KEY = '32d1a667e7a939e838e64f89f0bb1015';
 let weatherDetails = null;
 let showingDetails = false;
@@ -304,190 +273,67 @@ function getTheme(icon='', desc='') {
   return 'default';
 }
 
-// Canvas particle animation
 const canvas = document.getElementById('weather-canvas');
 const ctx2d = canvas.getContext('2d');
 let particles = [];
 
 function resizeCanvas() {
   const card = document.getElementById('weather-card');
-  canvas.width = card.offsetWidth;
-  canvas.height = card.offsetHeight;
+  if(card) { canvas.width = card.offsetWidth; canvas.height = card.offsetHeight; }
 }
 
 function initParticles(theme) {
-  particles = [];
-  resizeCanvas();
+  particles = []; resizeCanvas();
   const W = canvas.width, H = canvas.height;
-
   function sr(seed) { const x=Math.sin(seed+1)*10000; return x-Math.floor(x); }
-
   if(theme==='rain'||theme==='thunder') {
     for(let i=0;i<45;i++) {
-      particles.push({ type:'drop', x:sr(i*13)*W, y:sr(i*7)*H,
-        w:1.5+sr(i*3)*1.5, h:12+sr(i*5)*10,
-        speed:8+sr(i*11)*6, color:theme==='thunder'?'rgba(180,140,255,0.7)':'rgba(126,200,227,0.75)' });
-    }
-    for(let i=0;i<3;i++) {
-      particles.push({ type:'cloud', x:sr(i*7)*W, y:sr(i*11)*H*0.25,
-        w:140+sr(i*3)*100, speed:0.4+sr(i*5)*0.3, opacity:0.2+sr(i*2)*0.15 });
-    }
-    if(theme==='thunder') {
-      for(let i=0;i<3;i++) particles.push({ type:'bolt', x:sr(i*19)*W*0.7+W*0.15,
-        y:sr(i*11)*H*0.4, timer:0, interval:180+sr(i*7)*240, flash:0 });
+      particles.push({ type:'drop', x:sr(i*13)*W, y:sr(i*7)*H, w:1.5+sr(i*3)*1.5, h:12+sr(i*5)*10, speed:8+sr(i*11)*6, color:theme==='thunder'?'rgba(180,140,255,0.7)':'rgba(126,200,227,0.75)' });
     }
   } else if(theme==='snow') {
     for(let i=0;i<35;i++) {
-      particles.push({ type:'snow', x:sr(i*13)*W, y:sr(i*7)*H,
-        size:4+sr(i*3)*6, speed:1+sr(i*5)*1.5, sway:sr(i*11)*2-1,
-        swayAngle:sr(i*17)*Math.PI*2 });
-    }
-    for(let i=0;i<2;i++) {
-      particles.push({ type:'cloud', x:sr(i*7+50)*W, y:sr(i*9)*H*0.12,
-        w:200+sr(i*3)*100, speed:0.3, opacity:0.12 });
-    }
-  } else if(theme==='cloudy'||theme==='fog') {
-    const op = theme==='fog'?0.1:0.18;
-    for(let i=0;i<5;i++) {
-      particles.push({ type:'cloud', x:sr(i*13)*W, y:sr(i*11)*H*0.75,
-        w:160+sr(i*3)*160, speed:(sr(i*7)>0.5?1:-1)*(0.3+sr(i*5)*0.4), opacity:op+sr(i*17)*0.08 });
+      particles.push({ type:'snow', x:sr(i*13)*W, y:sr(i*7)*H, size:4+sr(i*3)*6, speed:1+sr(i*5)*1.5, sway:sr(i*11)*2-1, swayAngle:sr(i*17)*Math.PI*2 });
     }
   } else if(theme==='night') {
     for(let i=0;i<22;i++) {
-      particles.push({ type:'star', x:sr(i*13)*W, y:sr(i*7)*H*0.8,
-        size:1+sr(i*3)*2.5, phase:sr(i*17)*Math.PI*2, speed:0.02+sr(i*5)*0.02 });
-    }
-  } else if(theme==='sunny') {
-    for(let i=0;i<8;i++) {
-      particles.push({ type:'orb', x:sr(i*13)*W, y:H+10,
-        size:5+sr(i*5)*8, speed:0.8+sr(i*3)*0.8, opacity:0 });
+      particles.push({ type:'star', x:sr(i*13)*W, y:sr(i*7)*H*0.8, size:1+sr(i*3)*2.5, phase:sr(i*17)*Math.PI*2, speed:0.02+sr(i*5)*0.02 });
     }
   }
-}
-
-function drawCloud(x, y, w, opacity) {
-  const h2 = w*0.4;
-  ctx2d.save();
-  ctx2d.globalAlpha = opacity;
-  ctx2d.fillStyle = 'white';
-  ctx2d.beginPath();
-  ctx2d.ellipse(x+w*0.5, y+h2*0.75, w*0.45, h2*0.38, 0, 0, Math.PI*2); ctx2d.fill();
-  ctx2d.beginPath();
-  ctx2d.ellipse(x+w*0.35, y+h2*0.56, w*0.25, h2*0.44, 0, 0, Math.PI*2); ctx2d.fill();
-  ctx2d.beginPath();
-  ctx2d.ellipse(x+w*0.65, y+h2*0.53, w*0.22, h2*0.4, 0, 0, Math.PI*2); ctx2d.fill();
-  ctx2d.beginPath();
-  ctx2d.ellipse(x+w*0.5, y+h2*0.44, w*0.2, h2*0.38, 0, 0, Math.PI*2); ctx2d.fill();
-  ctx2d.restore();
 }
 
 function animateParticles() {
   ctx2d.clearRect(0, 0, canvas.width, canvas.height);
   const W = canvas.width, H = canvas.height;
-
   particles.forEach(p => {
     if(p.type==='drop') {
-      p.y += p.speed;
-      if(p.y > H) p.y = -p.h;
-      ctx2d.fillStyle = p.color;
-      ctx2d.beginPath();
-      ctx2d.roundRect(p.x, p.y, p.w, p.h, 2);
-      ctx2d.fill();
-    } else if(p.type==='cloud') {
-      p.x += p.speed;
-      if(p.speed>0 && p.x > W+p.w) p.x = -p.w;
-      if(p.speed<0 && p.x < -p.w) p.x = W;
-      drawCloud(p.x, p.y, p.w, p.opacity);
-    } else if(p.type==='bolt') {
-      p.timer++;
-      if(p.timer > p.interval) { p.timer=0; p.flash=8; }
-      if(p.flash>0) {
-        p.flash--;
-        ctx2d.save();
-        ctx2d.globalAlpha = p.flash/8;
-        ctx2d.font = `${32}px serif`;
-        ctx2d.fillText('⚡', p.x, p.y);
-        ctx2d.restore();
-      }
+      p.y += p.speed; if(p.y > H) p.y = -p.h;
+      ctx2d.fillStyle = p.color; ctx2d.beginPath(); ctx2d.roundRect(p.x, p.y, p.w, p.h, 2); ctx2d.fill();
     } else if(p.type==='snow') {
-      p.y += p.speed;
-      p.swayAngle += 0.02;
-      p.x += Math.sin(p.swayAngle) * p.sway;
-      if(p.y > H) { p.y = -p.size; }
-      if(p.x > W) p.x=0; if(p.x<0) p.x=W;
-      ctx2d.save();
-      ctx2d.globalAlpha = 0.85;
-      ctx2d.font = `${p.size}px serif`;
-      ctx2d.fillText('❄', p.x, p.y);
-      ctx2d.restore();
+      p.y += p.speed; p.swayAngle += 0.02; p.x += Math.sin(p.swayAngle) * p.sway;
+      if(p.y > H) p.y = -p.size; if(p.x > W) p.x=0; if(p.x<0) p.x=W;
+      ctx2d.save(); ctx2d.globalAlpha = 0.85; ctx2d.font = `${p.size}px serif`; ctx2d.fillText('❄', p.x, p.y); ctx2d.restore();
     } else if(p.type==='star') {
-      p.phase += p.speed;
-      const alpha = 0.2 + 0.8*((Math.sin(p.phase)+1)/2);
-      ctx2d.beginPath();
-      ctx2d.arc(p.x, p.y, p.size, 0, Math.PI*2);
-      ctx2d.fillStyle = `rgba(255,251,230,${alpha})`;
-      ctx2d.fill();
-    } else if(p.type==='orb') {
-      p.y -= p.speed;
-      p.opacity = p.y < H*0.4 ? Math.max(0, (p.y - (-20))/(H*0.4))*0.5 : 0.5*(1-(p.y-H*0.4)/(H*0.6));
-      if(p.y < -20) p.y = H+10;
-      const grad = ctx2d.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size);
-      grad.addColorStop(0,`rgba(255,224,102,${p.opacity})`);
-      grad.addColorStop(1,'transparent');
-      ctx2d.beginPath();
-      ctx2d.arc(p.x,p.y,p.size,0,Math.PI*2);
-      ctx2d.fillStyle=grad; ctx2d.fill();
+      p.phase += p.speed; const alpha = 0.2 + 0.8*((Math.sin(p.phase)+1)/2);
+      ctx2d.beginPath(); ctx2d.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx2d.fillStyle = `rgba(255,251,230,${alpha})`; ctx2d.fill();
     }
   });
-
   animFrame = requestAnimationFrame(animateParticles);
 }
 
 async function fetchWeather(lat, lon) {
-  document.getElementById('weather-city').textContent = 'Loading...';
   try {
     const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${OWM_KEY}`);
     const data = await res.json();
-    const icon = data.weather[0].icon;
-    const desc = data.weather[0].description;
-    const theme = getTheme(icon, desc);
-    currentTheme = theme;
+    const icon = data.weather[0].icon, desc = data.weather[0].description, theme = getTheme(icon, desc);
     document.getElementById('weather-bg').style.background = themes[theme].bg;
     document.getElementById('weather-city').textContent = data.name;
     document.getElementById('weather-temp').textContent = Math.round(data.main.temp)+'°F';
     document.getElementById('weather-desc').textContent = desc;
-    const img = document.getElementById('weather-icon');
-    img.src = `https://openweathermap.org/img/wn/${icon}@4x.png`;
-    img.style.display='block';
-    document.getElementById('weather-updated').textContent = 'Updated '+new Date().toLocaleTimeString()+' · tap for details';
-    const dew = data.main.temp - ((100-data.main.humidity)/5);
-    weatherDetails = {
-      'Feels Like': Math.round(data.main.feels_like)+'°F',
-      'Humidity': data.main.humidity+'%',
-      'Wind Speed': data.wind.speed+' mph',
-      'Visibility': (data.visibility/1609).toFixed(1)+' mi',
-      'Pressure': data.main.pressure+' hPa',
-      'UV Index': '-',
-      'Clouds': data.clouds.all+'%',
-      'Dew Point': Math.round(dew)+'°F'
-    };
-    cancelAnimationFrame(animFrame);
-    initParticles(theme);
-    animateParticles();
-    // Forecast
-    try {
-      const fcRes = await fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,daily,alerts&units=imperial&appid=${OWM_KEY}`);
-      const fc = await fcRes.json();
-      if(fc.hourly) {
-        const fcDiv = document.getElementById('forecast');
-        fcDiv.innerHTML = fc.hourly.slice(0,8).map(h=>{
-          const d=new Date(h.dt*1000),hrs=d.getHours(),ampm=hrs>=12?'PM':'AM';
-          return `<div class="fc"><div style="opacity:0.65">${((hrs+11)%12+1)}${ampm}</div><img src="https://openweathermap.org/img/wn/${h.weather[0].icon}@2x.png"/><div class="ft">${Math.round(h.temp)}°</div></div>`;
-        }).join('');
-      }
-      if(fc.current && weatherDetails) weatherDetails['UV Index'] = fc.current.uvi ?? '-';
-    } catch(e){}
-  } catch(e){ document.getElementById('weather-city').textContent='Error loading weather'; }
+    const img = document.getElementById('weather-icon'); img.src = `https://openweathermap.org/img/wn/${icon}@4x.png`; img.style.display='block';
+    document.getElementById('weather-updated').textContent = 'Updated '+new Date().toLocaleTimeString();
+    weatherDetails = { 'Feels Like': Math.round(data.main.feels_like)+'°F', 'Humidity': data.main.humidity+'%', 'Wind': data.wind.speed+' mph' };
+    cancelAnimationFrame(animFrame); initParticles(theme); animateParticles();
+  } catch(e){}
 }
 
 function geoLocate() {
@@ -505,262 +351,93 @@ function toggleDetails() {
   }
 }
 
-window.addEventListener('load',()=>{ geoLocate(); setInterval(geoLocate,600000); resizeCanvas(); });
-window.addEventListener('resize', resizeCanvas);
+window.addEventListener('load',()=>{ geoLocate(); resizeCanvas(); });
 
 // ─── ALERTS PAGE ──────────────────────────────────────
-let map, alertsData={}, historyChart, mapInited=false;
+let map, alertsData={}, mapInited=false;
 const alertMarkers=[];
-const sevColors={warning:'red',watch:'orange',advisory:'#FFD700','daily-summary':'green','Wind Advisory':'#1E90FF'};
+const sevColors={warning:'red',watch:'orange',advisory:'#FFD700'};
 
 function initAlertMap() {
-  if(mapInited) return;
-  mapInited=true;
+  if(mapInited) return; mapInited=true;
   map=L.map('alertMap').setView([39.29,-76.61],8);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
   alertsRef.on("value", snap=>{ alertsData=snap.val()||{}; renderAlerts(alertsData); });
 }
 
-function toggleDesc(id){ document.getElementById(id).classList.toggle('expanded'); }
-function dismissAlert(key){ const el=document.getElementById('card-'+key); if(el)el.remove(); }
-
-function showOnMap(a){
-  fetch('https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(a.location))
-  .then(r=>r.json()).then(data=>{
-    if(!data.length)return;
-    const lat=data[0].lat, lon=data[0].lon;
-    map.setView([lat,lon],10);
-    L.circle([lat,lon],{color:sevColors[a.severity]||'green',fillColor:sevColors[a.severity]||'green',fillOpacity:0.35,radius:15000}).addTo(map);
-    const m=L.circleMarker([lat,lon],{radius:8,color:'#000',fillColor:'#fff',fillOpacity:1}).addTo(map);
-    m.bindPopup('<b>'+a.type+'</b><br>'+a.location+'<br>'+a.description);
-    alertMarkers.push(m);
-  });
-}
-
-function applyFilters(){ renderAlerts(alertsData); }
-
 function renderAlerts(data){
   if(!map) return;
-  const aList=document.getElementById('alertsList'), hList=document.getElementById('historyList');
-  aList.innerHTML=''; hList.innerHTML='';
+  const aList=document.getElementById('alertsList'); aList.innerHTML='';
   alertMarkers.forEach(m=>map.removeLayer(m)); alertMarkers.length=0;
-  const sf=document.getElementById('filterSeverity').value, tf=document.getElementById('filterType').value, df=document.getElementById('filterDate').value;
-  const counts={Tornado:0,Flood:0,Wildfire:0,'Severe Storm':0,Lightning:0,'Wind Advisory':0,Heat:0,'Cold Weather':0,'Winter Storm':0};
-  const now=Date.now();
   for(const key in data){
     const a=data[key];
-    const end=new Date(a.endTime).getTime();
-    if(now>end){ counts[a.type]=(counts[a.type]||0)+1; const d=document.createElement('div'); d.className='alertCard alert-advisory'; d.innerHTML=`<b>${a.location}</b> - ${a.type}<br>${a.description}<br>${a.startTime} → ${a.endTime}`; hList.appendChild(d); continue; }
-    if(sf!=='all'&&a.severity!==sf) continue;
-    if(tf!=='all'&&a.type!==tf) continue;
-    if(df&&!a.startTime.startsWith(df)) continue;
-    const cls=(a.type==='Wind Advisory')?'alert-wind-advisory':(a.severity==='daily-summary'||a.type==='Daily Summary')?'alert-daily-summary':'alert-'+a.severity;
-    const div=document.createElement('div'); div.id='card-'+key; div.className='alertCard '+cls;
-    div.innerHTML=`<b>Location:</b> ${a.location} &nbsp;<b>Type:</b> ${a.type}<br><div class="alertDescription" id="desc-${key}">${a.description}</div><button class="btn" onclick="toggleDesc('desc-${key}')">Toggle</button> <button class="btn" onclick='showOnMap(${JSON.stringify(a)})'>Map</button> <button class="btn" onclick="dismissAlert('${key}')">Dismiss</button><span style="font-weight:bold;font-size:0.9em;opacity:0.85;" id="cd-${key}"></span><div class="progressBar"><div id="pb-${key}"></div></div>`;
+    const div=document.createElement('div'); div.className='alertCard alert-'+a.severity;
+    div.innerHTML=`<b>${a.location}</b>: ${a.type}<br>${a.description}`;
     aList.appendChild(div);
-    showOnMap(a);
   }
-  if(historyChart) historyChart.destroy();
-  historyChart=new Chart(document.getElementById('historyChart'),{type:'bar',data:{labels:Object.keys(counts),datasets:[{data:Object.values(counts),backgroundColor:'skyblue'}]},options:{plugins:{legend:{display:false}},responsive:true}});
 }
-
-setInterval(()=>{
-  for(const key in alertsData){
-    const a=alertsData[key], end=new Date(a.endTime).getTime(), start=new Date(a.startTime).getTime(), now=Date.now();
-    const diff=Math.max(0,end-now), pct=Math.max(0,100-(diff/(end-start)*100));
-    const el=document.getElementById('cd-'+key), bar=document.getElementById('pb-'+key);
-    if(el) el.innerText=` — Time left: ${Math.floor(diff/3600000)}h ${Math.floor((diff%3600000)/60000)}m ${Math.floor((diff%60000)/1000)}s`;
-    if(bar){bar.style.width=pct+'%'; bar.style.background=sevColors[a.severity]||'green';}
-  }
-},1000);
-
-// ─── SETTINGS ─────────────────────────────────────────
-let resolvedLocation = null;
-
-function lookupCity() {
-  const city=document.getElementById('homeCity').value.trim();
-  if(!city) return;
-  document.getElementById('lookupBtn').textContent='...';
-  fetch('https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(city)+'&limit=1')
-  .then(r=>r.json()).then(data=>{
-    document.getElementById('lookupBtn').textContent='Lookup';
-    if(!data.length){ alert('City not found'); return; }
-    resolvedLocation={city:data[0].display_name.split(',')[0], lat:parseFloat(data[0].lat), lon:parseFloat(data[0].lon)};
-    const box=document.getElementById('resolvedBox');
-    box.style.display='block';
-    box.textContent='✓ '+resolvedLocation.city+' ('+resolvedLocation.lat.toFixed(2)+', '+resolvedLocation.lon.toFixed(2)+')';
-  });
-}
-
-function saveLocation() {
-  if(!resolvedLocation){alert('Please look up a city first');return;}
-  localStorage.setItem('atmosphere_home_location',JSON.stringify(resolvedLocation));
-  alert('Home location saved!');
-}
-
-function clearLocation() {
-  resolvedLocation=null;
-  document.getElementById('homeCity').value='';
-  document.getElementById('resolvedBox').style.display='none';
-  localStorage.removeItem('atmosphere_home_location');
-}
-
-// Load saved location
-const saved=localStorage.getItem('atmosphere_home_location');
-if(saved){ const p=JSON.parse(saved); document.getElementById('homeCity').value=p.city||''; }
 
 // ─── ADMIN ────────────────────────────────────────────
-let adminUnlocked=false, editKey=null;
-
 function unlockAdmin(){
   if(document.getElementById('adminPass').value==='722005'){
-    adminUnlocked=true;
     document.getElementById('adminPanel').style.display='block';
-    document.getElementById('loginStatus').innerHTML='<span style="color:#4ade80">✅ Admin unlocked</span>';
     refreshAdminAlerts();
-  } else { document.getElementById('loginStatus').innerHTML='<span style="color:#f87171">❌ Wrong password</span>'; }
+  }
 }
 
 function postAlert(){
-  if(!adminUnlocked) return;
   const loc=document.getElementById('a-location').value, sev=document.getElementById('a-severity').value,
         type=document.getElementById('a-type').value, desc=document.getElementById('a-desc').value,
         start=document.getElementById('a-start').value, end=document.getElementById('a-end').value;
-  if(!loc||!desc||!start||!end){alert('All fields required');return;}
-  const alertData={location:loc,severity:sev,type,description:desc,startTime:start,endTime:end};
-  if(editKey){ alertsRef.child(editKey).update(alertData); document.getElementById('a-status').textContent='✅ Updated!'; cancelEdit(); }
-  else { alertsRef.push().set(alertData); document.getElementById('a-status').textContent='✅ Posted!'; }
-  ['a-location','a-desc','a-start','a-end'].forEach(id=>document.getElementById(id).value='');
-}
-
-function startEdit(key,a){
-  editKey=key;
-  document.getElementById('a-location').value=a.location;
-  document.getElementById('a-severity').value=a.severity;
-  document.getElementById('a-type').value=a.type;
-  document.getElementById('a-desc').value=a.description;
-  document.getElementById('a-start').value=a.startTime;
-  document.getElementById('a-end').value=a.endTime;
-  document.getElementById('postBtn').textContent='Update Alert';
-  document.getElementById('cancelEditBtn').style.display='inline-block';
-  document.getElementById('formTitle').textContent='Edit Alert';
-}
-
-function cancelEdit(){
-  editKey=null;
-  ['a-location','a-desc','a-start','a-end'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('a-severity').value='warning';
-  document.getElementById('a-type').value='Tornado';
-  document.getElementById('postBtn').textContent='Post Alert';
-  document.getElementById('cancelEditBtn').style.display='none';
-  document.getElementById('formTitle').textContent='Post a New Alert';
+  alertsRef.push().set({location:loc,severity:sev,type,description:desc,startTime:start,endTime:end});
 }
 
 function refreshAdminAlerts(){
-  if(!adminUnlocked) return;
   alertsRef.on("value", snap=>{
-    const data=snap.val(), list=document.getElementById('alertsAdminList');
-    list.innerHTML='';
-    if(!data){list.innerHTML='No active alerts.';return;}
-    const now=Date.now();
+    const data=snap.val(), list=document.getElementById('alertsAdminList'); list.innerHTML='';
     for(const key in data){
-      const a=data[key], endMs=new Date(a.endTime).getTime();
-      if(endMs<=now){alertsRef.child(key).remove();continue;}
-      const cls=(a.type==='Daily Summary'||a.severity==='daily-summary')?'alert-daily-summary':a.type==='Wind Advisory'?'alert-wind-advisory':'alert-'+a.severity;
-      const div=document.createElement('div'); div.className='alertCard '+cls;
-      div.innerHTML=`<b>Location:</b> ${a.location} &nbsp;<b>Type:</b> ${a.type}<br><div style="margin-top:5px;white-space:pre-wrap;word-break:break-word;">${a.description}</div><br><b>Start:</b> ${a.startTime} &nbsp;<b>End:</b> ${a.endTime}`;
-      const del=document.createElement('button'); del.className='btn'; del.textContent='Delete'; del.style.cssText='position:absolute;top:8px;right:8px;font-size:12px;padding:4px 10px;';del.onclick=(k=>()=>alertsRef.child(k).remove())(key);
-      const edit=document.createElement('button'); edit.className='btn'; edit.textContent='Edit'; edit.style.cssText='position:absolute;top:8px;right:72px;font-size:12px;padding:4px 10px;';edit.onclick=((k,al)=>()=>startEdit(k,al))(key,a);
-      div.style.position='relative';
-      div.appendChild(del); div.appendChild(edit);
+      const div=document.createElement('div'); div.innerHTML=data[key].location + ' - ' + data[key].type;
       list.appendChild(div);
     }
   });
 }
-// ─── ONESIGNAL NOTIFICATIONS ──────────────────────────
-function toggleNotifDropdown() {
-  document.getElementById('notifDropdown').classList.toggle('open');
-}
 
-document.addEventListener('click', e => {
-  const wrap = document.querySelector('.notif-wrap');
-  if (wrap && !wrap.contains(e.target)) {
-    document.getElementById('notifDropdown').classList.remove('open');
-  }
-});
-
-async function handleNotifAction() {
-  const btn = document.getElementById('notifActionBtn');
-  const status = document.getElementById('notifStatus');
-
-  if (!window.OneSignal) {
-    status.textContent = '⚠️ Notifications not ready yet. Please try again.';
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = '...';
-
-  try {
-    const optedIn = window.OneSignal.User.PushSubscription.optedIn;
-    if (optedIn) {
-      await window.OneSignal.User.PushSubscription.optOut();
-      updateNotifUI(false);
-    } else {
-      await window.OneSignal.Slidedown.promptPush();
-      updateNotifUI(window.OneSignal.User.PushSubscription.optedIn);
-    }
-  } catch(e) {
-    console.warn('Notification error:', e);
-    status.textContent = '⚠️ Something went wrong. Try again.';
-    updateNotifUI(false);
-  }
-
-  btn.disabled = false;
-}
-
-function updateNotifUI(optedIn) {
-  const btn    = document.getElementById('notifActionBtn');
-  const status = document.getElementById('notifStatus');
-  const bell   = document.getElementById('notifBell');
-  if (optedIn) {
-    bell.textContent   = '🔔';
-    status.textContent = '✅ Subscribed to weather alerts.';
-    btn.textContent    = 'Unsubscribe';
-    btn.classList.add('unsub');
-  } else {
-    bell.textContent   = '🔕';
-    status.textContent = 'Get push notifications for active weather alerts.';
-    btn.textContent    = 'Enable Notifications';
-    btn.classList.remove('unsub');
-  }
-}
-
+// ─── ONESIGNAL (Slide-in Prompt) ────────────────────────
+window.OneSignalDeferred = window.OneSignalDeferred || [];
 OneSignalDeferred.push(async function(OneSignal) {
   await OneSignal.init({
     appId: "d4e62b24-25ed-4f1c-9346-16e03226921c",
     safari_web_id: "web.onesignal.auto.53856230-671c-4389-9801-7058869c9769",
     serviceWorkerPath: "service-worker.js",
-    notifyButton: { enable: false },
+    notifyButton: {
+      enable: false, // Disables the bell icon
+    },
+    promptOptions: {
+      slidedown: {
+        prompts: [
+          {
+            type: "push",
+            autoPrompt: true, // Automatically shows prompt
+            text: {
+              actionMessage: "Would you like to receive weather alerts for Maryland?",
+              acceptButton: "Enable",
+              cancelButton: "Later"
+            },
+            delay: {
+              pageViews: 1,
+              timeDelay: 5
+            }
+          }
+        ]
+      }
+    },
     allowLocalhostAsSecureOrigin: true,
-  });
-  updateNotifUI(OneSignal.User.PushSubscription.optedIn);
-  OneSignal.User.PushSubscription.addEventListener('change', e => {
-    updateNotifUI(e.current.optedIn);
   });
 });
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js');
+  navigator.serviceWorker.register('/weather-app-alerts/service-worker.js');
 }
-
-// Fallback: if OneSignal never inits, stop showing "Checking..."
-setTimeout(() => {
-  const status = document.getElementById('notifStatus');
-  if (status && status.textContent === 'Checking…') {
-    status.textContent = 'Get push notifications for active weather alerts.';
-    document.getElementById('notifActionBtn').textContent = 'Enable Notifications';
-  }
-}, 5000);
 </script>
+</body>
 </html>
